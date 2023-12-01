@@ -26,19 +26,16 @@
               <div class="form-group row">
                 <label for="inputEmail3" class="col-sm-2 col-form-label">District</label>
                 <div class="col-sm-10">
-                  <select class="form-select form-control" aria-label="Default select example" require>
+                  <select class="form-select form-control" aria-label="Default select example" name="districtId">
                     <option selected>Select your field</option>
                     <?php
                     $query = "SELECT * FROM district";
                     $allDistrict = mysqli_query($conn, $query);
                     while ($row = mysqli_fetch_assoc($allDistrict)) {
-                      $id = $row['id'];
-                      $name = $row['name']
-
-
+                      $districtId = $row['id'];
+                      $name = $row['name'];
                     ?>
-
-                      <option value="$id"><?php echo ucfirst($name) ?></option>
+                      <option value="<?php echo $districtId ?>"><?php echo ucfirst($name) ?></option>
                     <?php } ?>
 
                   </select>
@@ -61,8 +58,8 @@
           <?php
           if (isset($_POST['submit'])) {
             $name = $_POST['name'];
-            //$district_id = 1;
-            $sql = "INSERT INTO sub_district (name) values ('$name')";
+            $district_id = $_POST['districtId'];
+            $sql = "INSERT INTO sub_district (name,district_id) values ('$name','$district_id')";
             $submit = mysqli_query($conn, $sql);
             if (!$submit) {
               die("Query Failed!" . mysqli_error($conn));
@@ -84,9 +81,11 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th style="width: 10px">#SL</th>
+                  <th>#SL</th>
                   <th>Country Name</th>
-                  <th style="width: 40px">Action</th>
+                  <th>District</th>
+                  <th>Sub-District</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -96,12 +95,29 @@
                 $i = 0;
                 while ($row = mysqli_fetch_assoc($allSubDistrict)) {
                   $i++;
-                  $id = $row['id'];
-                  $name = $row['name'];
+                  $subDistrict_id = $row['id'];
+                  $subDistrict_name = $row['name'];
+                  $districtId = $row['district_id'];
                 ?>
                   <tr>
                     <td><?php echo $i ?></td>
-                    <td><?php echo ucfirst($name) ?></td>
+                    <?php
+                    $districtQuery= "SELECT * FROM district WHERE id =$districtId";
+                    $allDistrict = mysqli_query($conn,$districtQuery);
+                    while ($row = mysqli_fetch_assoc($allDistrict)) {
+                      $district_name = $row['name'];
+                      $country_id = $row['country_id'];
+                      $countryQuery = "SELECT * FROM country WHERE id =$country_id";
+                      $allCountry = mysqli_query($conn,$countryQuery);
+                    while ($row = mysqli_fetch_assoc($allCountry)){
+                      $country_name = $row['name'];
+                    
+                  ?>
+                  
+
+                    <td><?php echo $country_name; } ?> </td>
+                    <td><?php echo $district_name; } ?> </td>
+                    <td><?php echo ucfirst($subDistrict_name) ?></td>
                     <td class="d-flex">
                       <a href="#" class="btn btn-outline-success mr-2"><i class="far fa-edit" title="Update"></i></a>
                       <a href="subdistrict.php?delete=<?php echo $id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt" title="Delete"></i></a>
