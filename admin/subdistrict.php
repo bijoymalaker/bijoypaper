@@ -70,6 +70,58 @@
           }
           ?>
         </div>
+          <?php
+            if (isset($_GET['update'])) {
+              $subDistrict_id = $_GET['update'];
+              $update_subDistrict_query = "SELECT * FROM sub_district WHERE id = $subDistrict_id";
+              $update_subDistrict = mysqli_query($conn,$update_subDistrict_query);
+              while ($row = mysqli_fetch_assoc($update_subDistrict)) {
+                $subDistrict_id = $row['id'];
+                $subDistrict_name = $row['name'];
+                ?>
+              
+              <div class="card card-info">
+          <div class="card-header">
+            <h3 class="card-title">Add Sub-district</h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+          <form class="form-horizontal" method="post">
+            <div class="card-body">
+              <div class="form-group row">
+                <label for="inputEmail3" class="col-sm-2 col-form-label">Name</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" placeholder="Enter Sub-district name" name="name" value="<?php echo $subDistrict_name; } ?>">
+                </div>
+              </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              <button type="submit" class="btn btn-info float-right" name="update">Submit</button>
+            </div>
+            <!-- /.card-footer -->
+          </form>
+
+          <?php
+            
+          if (isset($_POST['update'])) {
+            $name = $_POST['name'];
+            $sql = "UPDATE `sub_district` SET `name`='$name' WHERE id = $subDistrict_id";
+            $submit = mysqli_query($conn, $sql);
+            if (!$submit) {
+              die("Query Failed!" . mysqli_error($conn));
+            } else {
+              header("Location:subdistrict.php");
+            }
+            $conn->close();
+          }
+          ?>
+        </div>
+        <?php
+            }
+          ?>
+
+
       </div>
       <div class="col-md-6">
         <div class="card">
@@ -119,8 +171,8 @@
                     <td><?php echo $district_name; } ?> </td>
                     <td><?php echo ucfirst($subDistrict_name) ?></td>
                     <td class="d-flex">
-                      <a href="#" class="btn btn-outline-success mr-2"><i class="far fa-edit" title="Update"></i></a>
-                      <a href="subdistrict.php?delete=<?php echo $id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt" title="Delete"></i></a>
+                      <a href="subdistrict.php?update=<?php echo $subDistrict_id ?>" class="btn btn-outline-success mr-2"><i class="far fa-edit" title="Update"></i></a>
+                      <a href="subdistrict.php?delete=<?php echo $subDistrict_id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt" title="Delete"></i></a>
                     </td>
                   </tr>
                 <?php } ?>
